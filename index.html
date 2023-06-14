@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>SwipeSearch</title>
+</head>
+<body>
+    <div id="login">
+        Log in to Spotify
+        <img src="misc/spotify.png" class="icon" alt="Spotify Logo">
+    </div>
+
+    <script>
+        document.getElementById('login').addEventListener('click', function() {
+          var client_id = 'af44c6baf2764fd5afbf4b8e6d1d79b8';
+          var redirect_uri = 'http://192.168.1.134:8080/Playlists';
+          var scopes = 'playlist-read-private playlist-modify-private';
+
+          var url = 'https://accounts.spotify.com/authorize?response_type=token';          
+          url += '&client_id=' + encodeURIComponent(client_id);
+          url += '&redirect_uri=' + encodeURIComponent(redirect_uri);
+          url += '&scope=' + encodeURIComponent(scopes);
+          window.location = url;
+        }, false);
+    </script>
+</body>
+</html>

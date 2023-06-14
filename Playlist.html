@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/playlist.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins:ital,wght@1,500&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <div id="savedButton" onclick="showSaved()">
+        0
+    </div>
+    <div id="savedSongs" class="hidden">
+        <div id="savetoLiked" class="saveButton">Save Songs</div>
+        <div id="savetoPlaylist" class="saveButton">Save to Playlist</div>
+        <div id="savedSongsList"></div>
+    </div>
+    <div id="card">
+        <img id="cover">
+        <div id="title"></div>
+        <div id="info">
+            <br>
+            <div id="artist"></div>
+            <br>
+            <div id="album"></div>
+        </div>
+        <audio id="preview" autoplay="true">Your browser does not support the audio element.</audio>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        function setCard(i) {
+            document.getElementById('cover').src = songs[i].album.images[0].url;
+            document.getElementById('title').innerHTML = songs[i].name;
+            document.getElementById('artist').innerHTML = songs[i].artists.map(obj => obj.name).join(', ');
+            document.getElementById('album').innerHTML = songs[i].album.name;
+            document.getElementById('preview').src = songs[i].preview_url;
+        }
+
+        var savedSongs = localStorage['savedSongs'] ? JSON.parse(localStorage['savedSongs']) : [];
+        var uriSet = localStorage['uriSet'] ? new Set(JSON.parse(localStorage['uriSet'])) : new Set();
+        document.getElementById('savedButton').innerText = savedSongs.length;
+        var songs = JSON.parse(localStorage['songs']);
+        var i = 0;
+        console.log(songs[i]);
+        setCard(i);
+        document.addEventListener('keyup', function(event) {
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                if (event.key === 'ArrowRight') {
+                    if (!uriSet.has(songs[i].uri)) {
+                        uriSet.add(songs[i].uri);
+                        savedSongs.push(songs[i]);
+                        document.getElementById('savedButton').innerText = savedSongs.length;
+                        localStorage['savedSongs'] = JSON.stringify(savedSongs);
+                        localStorage['uriSet'] = JSON.stringify(Array.from(uriSet));
+                    }
+                }
+                i++;
+                setCard(i);
+            }
+        });
+
+    </script>
+</body>
+</html>
+
+<!-- 
+    TODO:
+    1) Add Playlist name to Bottom of Page under Card (check GPT code)
+    2) Add button to return to Playlists Page
+    3) Connect Buttons to API (Save to Liked Songs, Save to Playlist)
+    4) Create Screen for when end of playlist is reached
+    5) Change Arrow Key press to instead be swipe (Incorporate Hammer.js)
+    6) Animate card movement with swipe
+ -->
