@@ -31,6 +31,10 @@
         </div>
         <audio id="preview" autoplay="true">Your browser does not support the audio element.</audio>
     </div>
+    <div id="completed" style="display: none;">
+        That's all the Songs!<br><br>
+        <a href="Playlists.html" id="return">Return to Playlists</a>
+    </div>
     <a href="Playlists.html">
         <div id="playlistBox">
             <img id="playlistCover">
@@ -75,21 +79,27 @@
             var i = 0;
             setCard(songs[0]);
             // For Debugging on PC, set arrow key presses to swipes
-            // document.addEventListener('keyup', function(event) {
-            //     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-            //         if (event.key === 'ArrowRight') {
-            //             if (!uriSet.has(songs[i].uri)) {
-            //                 uriSet.add(songs[i].uri);
-            //                 savedSongs.push(songs[i]);
-            //                 document.getElementById('savedButton').innerText = savedSongs.length;
-            //                 localStorage['savedSongs'] = JSON.stringify(savedSongs);
-            //                 localStorage['uriSet'] = JSON.stringify(Array.from(uriSet));
-            //             }
-            //         }
-            //         i++;
-            //         setCard(songs[i]);
-            //     }
-            // });
+            document.addEventListener('keyup', function(event) {
+                if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                    if (event.key === 'ArrowRight') {
+                        if (!uriSet.has(songs[i].uri)) {
+                            uriSet.add(songs[i].uri);
+                            savedSongs.push(songs[i]);
+                            document.getElementById('savedButton').innerText = savedSongs.length;
+                            localStorage['savedSongs'] = JSON.stringify(savedSongs);
+                            localStorage['uriSet'] = JSON.stringify(Array.from(uriSet));
+                        }
+                    }
+                    i++;
+                    if (i >= songs.length) {
+                    //Hide Card Element
+                    card.style.display = 'none';
+                    document.getElementById('completed').style.display = 'block';
+                } else {
+                    setCard(songs[i]);
+                }
+                }
+            });
 
             hammer.on('swipe', (event) => {
             if (event.direction === Hammer.DIRECTION_LEFT || event.direction === Hammer.DIRECTION_RIGHT) {
@@ -106,7 +116,13 @@
                     localStorage['uriSet'] = JSON.stringify(Array.from(uriSet));
                 }
                 i++;
-                setCard(songs[i]);
+                if (i >= songs.length) {
+                    //Hide Card Element
+                    card.style.display = 'none';
+                    document.getElementById('completed').style.display = 'block';
+                } else {
+                    setCard(songs[i]);
+                }
                 setTimeout(() => {
                     card.style.transform = '';
                     card.style.transition = '';

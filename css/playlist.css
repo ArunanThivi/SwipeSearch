@@ -13,6 +13,7 @@ html, body {
 
 a {
     color: black;
+    text-decoration: none;
 }
   
 
@@ -97,4 +98,21 @@ a {
 #playlistCover {
     height: 50px;
     padding: 0 10px 0 20px;
+}
+
+#completed {
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.25em;
+    position: absolute;
+    top: 40vh;
+    left: 25vw;
+}
+
+#return {
+    font-family: 'Poppins', sans-serif;
+    border: 3px solid white;
+    border-radius: 10px;
+    padding: 5px;
+    color: white;
 }
