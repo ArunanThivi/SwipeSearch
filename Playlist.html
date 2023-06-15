@@ -16,8 +16,8 @@
         0
     </div>
     <div id="savedSongs" class="hidden">
-        <div id="savetoLiked" class="saveButton">Save Songs</div>
-        <div id="savetoPlaylist" class="saveButton">Save to Playlist</div>
+        <div id="savetoLiked" class="saveButton" onClick="saveSongs()">Save Songs</div>
+        <!-- <div id="savetoPlaylist" class="saveButton">Save to Playlist</div> -->
         <div id="savedSongsList"></div>
     </div>
     <div id="card">
@@ -31,15 +31,16 @@
         </div>
         <audio id="preview" autoplay="true">Your browser does not support the audio element.</audio>
     </div>
+    <a href="Playlists.html">
+        <div id="playlistBox">
+            <img id="playlistCover">
+            <div id="playlistName"></div>
 
-    <div id="playlistBox">
-        <img id="playlistCover">
-        <div id="playlistName"></div>
-
-    </div>
+        </div>
+    </a>
 
 
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <script src="js/app.js"></script>
     <script>
 
@@ -51,9 +52,18 @@
             document.getElementById('preview').src = song.preview_url;
         }
 
+        function saveSongs() {
+            var songIds = savedSongs.map(obj => obj.id).join(',');
+            var access_token = localStorage["token"];
+            APIController.saveSongs(access_token, songIds);
+        }
+
         var savedSongs = localStorage['savedSongs'] ? JSON.parse(localStorage['savedSongs']) : [];
         var uriSet = localStorage['uriSet'] ? new Set(JSON.parse(localStorage['uriSet'])) : new Set();
         document.getElementById('savedButton').innerText = savedSongs.length;
+
+        const card = document.getElementById('card');
+        const hammer = new Hammer(card);
 
         (async function() {
             var access_token = localStorage["token"];
@@ -64,29 +74,50 @@
 
             var i = 0;
             setCard(songs[0]);
-            document.addEventListener('keyup', function(event) {
-                if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-                    if (event.key === 'ArrowRight') {
-                        if (!uriSet.has(songs[i].uri)) {
-                            uriSet.add(songs[i].uri);
-                            savedSongs.push(songs[i]);
-                            document.getElementById('savedButton').innerText = savedSongs.length;
-                            localStorage['savedSongs'] = JSON.stringify(savedSongs);
-                            localStorage['uriSet'] = JSON.stringify(Array.from(uriSet));
-                        }
-                    }
-                    i++;
-                    setCard(songs[i]);
+            // For Debugging on PC, set arrow key presses to swipes
+            // document.addEventListener('keyup', function(event) {
+            //     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+            //         if (event.key === 'ArrowRight') {
+            //             if (!uriSet.has(songs[i].uri)) {
+            //                 uriSet.add(songs[i].uri);
+            //                 savedSongs.push(songs[i]);
+            //                 document.getElementById('savedButton').innerText = savedSongs.length;
+            //                 localStorage['savedSongs'] = JSON.stringify(savedSongs);
+            //                 localStorage['uriSet'] = JSON.stringify(Array.from(uriSet));
+            //             }
+            //         }
+            //         i++;
+            //         setCard(songs[i]);
+            //     }
+            // });
+
+            hammer.on('swipe', (event) => {
+            if (event.direction === Hammer.DIRECTION_LEFT || event.direction === Hammer.DIRECTION_RIGHT) {
+                // Animate the div element off the screen
+                card.style.transform = 'translateX(' + (event.direction === Hammer.DIRECTION_LEFT ? '-100%' : '100%') + ')';
+                card.style.transition = 'transform 0.3s ease-out';
+
+                // Optionally, perform additional actions or cleanup after the animation
+                if (event.direction === Hammer.DIRECTION_RIGHT && !uriSet.has(songs[i].uri)) {
+                    uriSet.add(songs[i].uri);
+                    savedSongs.push(songs[i]);
+                    document.getElementById('savedButton').innerText = savedSongs.length;
+                    localStorage['savedSongs'] = JSON.stringify(savedSongs);
+                    localStorage['uriSet'] = JSON.stringify(Array.from(uriSet));
                 }
-            });
+                i++;
+                setCard(songs[i]);
+                setTimeout(() => {
+                    card.style.transform = '';
+                    card.style.transition = '';
+                }, 300);
+            }
+        });
 
             document.getElementById('playlistName').innerText = playlist.name;
             document.getElementById('playlistCover').src = playlist.images[0].url;
 
         })();
-
-        
-
 
     </script>
 </body>
@@ -94,9 +125,5 @@
 
 <!-- 
     TODO:
-    2) Add button to return to Playlists Page
-    3) Connect Buttons to API (Save to Liked Songs, Save to Playlist)
     4) Create Screen for when end of playlist is reached
-    5) Change Arrow Key press to instead be swipe (Incorporate Hammer.js)
-    6) Animate card movement with swipe
  -->
