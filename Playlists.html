@@ -23,13 +23,13 @@
             }
             var url = new URL(window.location.href);
             console.log(url.searchParams);
-            // if (!localStorage["token"]) {
-            var access_token = getHashParams().access_token;
-            console.log("access_token: " + access_token);                 
-            localStorage["token"] = access_token;
-            // } else {
-            //     var access_token = localStorage["token"];
-            // }
+            if (!localStorage["token"]) {    
+                var access_token = getHashParams().access_token;
+                console.log("access_token: " + access_token);                 
+                localStorage["token"] = access_token;
+            } else {
+                var access_token = localStorage["token"];
+            }
             var playlists = await APIController.getPlaylists(access_token);
             playlists = playlists.items;
             displayPlaylists(playlists);

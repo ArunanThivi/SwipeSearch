@@ -47,6 +47,14 @@ const APIController = (function () {
         return data;
     }
 
+    const _saveSongs = async (token, ids) => {
+        const result = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${ids}`, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+    };
+
+    // const _saveToPlaylist = async (token, playlistId, ids) => {
 
     return {
         getProfile(token) {
@@ -63,6 +71,9 @@ const APIController = (function () {
         },
         getPlaylist(token, id) {
             return _getPlaylist(token, id);
+        },
+        saveSongs(token, ids) {
+            return _saveSongs(token, ids);
         }
     }
 
