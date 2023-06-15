@@ -37,6 +37,16 @@ const APIController = (function () {
         return data;
     }
 
+    const _getPlaylist = async (token, id) => {
+        const result = await fetch(`https://api.spotify.com/v1/playlists/${id}`, {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+
+        const data = await result.json();
+        return data;
+    }
+
 
     return {
         getProfile(token) {
@@ -50,7 +60,9 @@ const APIController = (function () {
         },
         getTracks(token, ids) {
             return _getTracks(token, ids);
-
+        },
+        getPlaylist(token, id) {
+            return _getPlaylist(token, id);
         }
     }
 
@@ -80,7 +92,7 @@ function getHashParams() {
         var owner = playlists[i].owner.display_name;
         var boxElement = `
         <div class='songInfo' id='playlist${i}'>
-        <img src=${cover} class='playlistTile link' onClick='getPlaylist("${id}")'><br>
+        <a href='Playlist.html?playlist=${id}'><img src=${cover} class='playlistTile link'></a><br>
         ${name}<br>
         By: ${owner}<br>
         </div>`
@@ -90,18 +102,6 @@ function getHashParams() {
     }
 }
 
-async function getPlaylist(id) {
-    if (!localStorage["token"]) {
-        var access_token = getHashParams().access_token;
-        localStorage["token"] = access_token;
-    } else {
-        var access_token = localStorage["token"];
-    }
-    playlistSongs = await APIController.getPlaylistSongs(access_token, id);
-    playlistSongs = playlistSongs.items.map(obj => obj.track);
-    localStorage["songs"] = JSON.stringify(playlistSongs);
-    window.location.href = "Playlist.html"
-}
 
 function showSaved() {
     document.getElementById("savedSongsList").innerHTML = "";
@@ -132,14 +132,15 @@ function showSaved() {
 
 function removedSaved(i) {
     var saved = JSON.parse(localStorage["savedSongs"]);
-    saved.splice(i, 1);
+    var URIs = new Set(JSON.parse(localStorage["uriSet"]))
+    URIs.delete(saved.splice(i, 1)[0].uri);
     localStorage["savedSongs"] = JSON.stringify(saved);
+    localStorage["uriSet"] = JSON.stringify(Array.from(URIs));
     showSaved();
 }
 
 function closeSaved() {
     var saved = JSON.parse(localStorage["savedSongs"]);
     document.getElementById("savedButton").innerText = saved.length;
-    document.getElementById("savedButton").onclick = showSaved;
-    document.getElementById("savedSongs").style.display = "none";
+    document.getElementById("savedButton").onclick = showSaved;    document.getElementById("savedSongs").style.display = "none";
 }
