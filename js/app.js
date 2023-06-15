@@ -10,8 +10,8 @@ const APIController = (function () {
         return data;
     }
 
-    const _getPlaylists = async (token) => {
-        const result = await fetch(`https://api.spotify.com/v1/me/playlists`, {
+    const _getPlaylists = async (token, offset) => {
+        const result = await fetch(`https://api.spotify.com/v1/me/playlists?offset=${offset}`, {
             method: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
         });
@@ -60,8 +60,8 @@ const APIController = (function () {
         getProfile(token) {
             return _getProfile(token);
         },
-        getPlaylists(token) {
-            return _getPlaylists(token);
+        getPlaylists(token, offset) {
+            return _getPlaylists(token, offset);
         },
         getPlaylistSongs(token, playlistId) {
             return _getPlaylistSongs(token, playlistId);
@@ -155,3 +155,38 @@ function closeSaved() {
     document.getElementById("savedButton").innerText = saved.length;
     document.getElementById("savedButton").onclick = showSaved;    document.getElementById("savedSongs").style.display = "none";
 }
+
+function handleScroll() {
+    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = document.documentElement.scrollTop;
+    const clientHeight = document.documentElement.clientHeight;
+
+    if (scrollHeight - scrollTop - clientHeight < 200) {
+        APIController.getPlaylists(access_token, offset).then(playlists => {
+            // Process the fetched playlists
+            offset += 20;
+            console.log('Fetched playlists:', playlists);
+            displayPlaylists(playlists.items, playlists.items.length, 0);
+            if (playlists.next == null) {
+                document.removeEventListener('scroll', handleScroll);
+            }
+        })
+        .catch(error => {
+            // Handle any errors that occur during the API call
+            console.error('Error fetching playlists:', error);
+            console.log("token " + access_token)
+        });
+    }
+}
+
+function debounce(func, delay) {
+    let timeoutId;
+    
+    return function(...args) {
+      clearTimeout(timeoutId);
+      
+      timeoutId = setTimeout(() => {
+        func.apply(this, args);
+      }, delay);
+    };
+  }

@@ -9,13 +9,13 @@
 </head>
 <body>
     <div id="playlistList"></div>
-    <!-- 
-        1) Get all playlists user follows
-        2) Get art for each playlist
-        3) Display playlists in a scrollable list with art, 2 per row
-     -->
      <script src="js/app.js"></script>
      <script>
+        var access_token = "";
+        var offset = 0;
+
+        window.addEventListener('scroll', debounce(handleScroll, 200));
+
         (async function() {
             
             if (window.location.search.indexOf('error') != -1) {
@@ -24,13 +24,14 @@
             var url = new URL(window.location.href);
             console.log(url.searchParams);
             if (!localStorage["token"]) {    
-                var access_token = getHashParams().access_token;
+                access_token = getHashParams().access_token;
                 console.log("access_token: " + access_token);                 
                 localStorage["token"] = access_token;
             } else {
-                var access_token = localStorage["token"];
+                access_token = localStorage["token"];
             }
-            var playlists = await APIController.getPlaylists(access_token);
+            var playlists = await APIController.getPlaylists(access_token, offset);
+            offset += 20;
             playlists = playlists.items;
             displayPlaylists(playlists);
         })();
