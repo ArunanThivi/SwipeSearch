@@ -116,3 +116,11 @@ a {
     padding: 5px;
     color: white;
 }
+
+#artist {
+    margin-left: 20px;
+}
+
+#album {
+    margin-left: 20px;
+}
