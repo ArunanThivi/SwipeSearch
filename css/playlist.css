@@ -22,17 +22,17 @@ a {
     width: 80vw;
     border: 3px solid black;
     border-radius: 5px;
-    color: white;
-    background-color: #362a87;
+    /* color: white; */
+    /* background-color: #362a87; */
     margin-left:auto;
     margin-right:auto;
     margin-top: 15%;
 }
 
 #cover {
-    width: 80%;
+    width: 100%;
     display: block;
-    margin: 5% auto;
+    margin-bottom: 10%;
 }
 
 #savedButton {
@@ -62,17 +62,14 @@ a {
 }
 
 #playlistBox {
-    display: flex;
-    align-items: center;
     width: 100%;
     position: absolute;
-    bottom: 0;
     left: 0;
     height: 10vh;
     overflow: hidden;
-    background-color: gray;
-    /* text-align: center; */
+    text-align: center;
     line-height: 10vh;
+    /* color: white; */
 }
 
 #playlistName {
