@@ -117,7 +117,7 @@ function getHashParams() {
 function showSaved() {
     document.getElementById("savedSongsList").innerHTML = "";
     document.getElementById("savedSongs").style.display = "block";
-    var saved = JSON.parse(localStorage["savedSongs"]);
+    var saved = savedSongs;
     for (let i in saved) {
         var song = saved[i];
         console.log(song);
@@ -142,18 +142,16 @@ function showSaved() {
 }
 
 function removedSaved(i) {
-    var saved = JSON.parse(localStorage["savedSongs"]);
-    var URIs = new Set(JSON.parse(localStorage["uriSet"]))
-    URIs.delete(saved.splice(i, 1)[0].uri);
-    localStorage["savedSongs"] = JSON.stringify(saved);
-    localStorage["uriSet"] = JSON.stringify(Array.from(URIs));
+    uriSet.delete(savedSongs.splice(i, 1)[0].uri);
+    localStorage["savedSongs"] = JSON.stringify(savedSongs);
+    localStorage["uriSet"] = JSON.stringify(Array.from(uriSet));
     showSaved();
 }
 
 function closeSaved() {
-    var saved = JSON.parse(localStorage["savedSongs"]);
-    document.getElementById("savedButton").innerText = saved.length;
-    document.getElementById("savedButton").onclick = showSaved;    document.getElementById("savedSongs").style.display = "none";
+    document.getElementById("savedButton").innerText = savedSongs.length;
+    document.getElementById("savedButton").onclick = showSaved;
+    document.getElementById("savedSongs").style.display = "none";
 }
 
 function handleScroll() {

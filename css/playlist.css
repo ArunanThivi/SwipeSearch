@@ -37,6 +37,7 @@ a {
 
 #savedButton {
     background-color: white;
+    color: black;
     position: fixed;
     top: 1.2vh;
     right: 2.5vw;
@@ -68,7 +69,7 @@ a {
     height: 10vh;
     overflow: hidden;
     text-align: center;
-    line-height: 10vh;
+    line-height: 8vh;
     /* color: white; */
 }
 
