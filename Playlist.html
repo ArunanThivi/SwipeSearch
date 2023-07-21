@@ -20,11 +20,13 @@
         <!-- <div id="savetoPlaylist" class="saveButton">Save to Playlist</div> -->
         <div id="savedSongsList"></div>
     </div>
-    <div id="playlistBox">
-        <!-- <img id="playlistCover"> -->
-        <span id="playlistName"></span>
-
-    </div>
+    <a href="Playlists.html">
+        <div id="playlistBox">
+            <!-- <img id="playlistCover"> -->
+            <span id="playlistName"></span>
+    
+        </div>
+    </a>
     <div id="card">
         <img id="cover">
         <div id="title"></div>
@@ -37,13 +39,13 @@
             <!-- Maybe move Playlist button to bottom right -->
             <!-- Add some confirmation when clicking Save Songs button -->
             <!-- Add Save to Playlist Function -->
-            <!-- ReColor UI (Look into featureSearch library for pulling color - Gradient to black)-->
-            <!-- Play with Making album cover full width of Card -->
+                <!-- ReColor UI (Look into featureSearch library for pulling color - Gradient to black)--> 
+                <!-- Play with Making album cover full width of Card -->
             <!-- Have Card move with User input -->
             <!-- Functionality when tap on album cover
             Tapping on Album Cover shows Artist and Genre and year Released ?
             Can use CSS blur() to blur background and show info in foreground -->
-            <!-- BUG: Swiping right re-adds songs deleted from Saved Queue  -->
+                <!-- BUG: Swiping right re-adds songs deleted from Saved Queue  -->
             <!-- <img src="misc/undo.webp"> -->
             <!-- <img class="button" src="misc/like.webp">
             <img class="button" src="misc/dislike.webp"> -->
@@ -55,8 +57,6 @@
         That's all the Songs!<br><br>
         <a href="Playlists.html" id="return">Return to Playlists</a>
     </div>
-    <a href="Playlists.html">
-    </a>
 
 
     <script src="js/app.js"></script>
@@ -76,18 +76,21 @@
             var img = $('#cover');
             img.imgcolr(function (img, color) {
                 // $('body').style.backgroundColor = color;
-                $("body").css('background-color', color);
-                $("body").css('background', `linear-gradient(180deg, ${color} 70%, #000000 100%)`);
                 // console.log(color);
                 var tiny = tinycolor(color);
                 console.log('TINY', tiny.getBrightness());
                 if (!tiny.isValid()) {
                     console.log("PROBLEM!!!!")
                 }
+                $("body").css('background-color', color);
                 if (tiny.getBrightness() < 100) {
                     $("body").css('color', 'white')
+                    $("body").css('background', `linear-gradient(180deg, ${color} 80%, #FFFFFF 100%)`);
+                    $('#playlistName').css('color', 'black');
                 } else {
+                    $("body").css('background', `linear-gradient(180deg, ${color} 80%, #000000 100%)`);
                     $("body").css('color', 'black')
+                    $('#playlistName').css('color', 'white');
                 }
             });
         }
@@ -165,7 +168,7 @@
                 }, 300);
             }
         });
-
+        
             document.getElementById('playlistName').innerText = playlist.name;
             // document.getElementById('playlistCover').src = playlist.images[0].url;
 

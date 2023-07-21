@@ -115,8 +115,8 @@ function getHashParams() {
 
 
 function showSaved() {
-    document.getElementById("savedSongsList").innerHTML = "";
-    document.getElementById("savedSongs").style.display = "block";
+    $("#savedSongsList").innerHTML = "";
+    $("#savedSongs").style.display = "block";
     var saved = savedSongs;
     for (let i in saved) {
         var song = saved[i];
@@ -135,10 +135,10 @@ function showSaved() {
         songInfo.innerHTML += song.name + "<br>";
         songInfo.innerHTML += song.artists[0].name;
         songBox.appendChild(songInfo);
-        document.getElementById("savedSongsList").appendChild(songBox);
+        $("#savedSongsList").appendChild(songBox);
     }
-    document.getElementById("savedButton").innerHTML = "&times;"
-    document.getElementById("savedButton").onclick = closeSaved;
+    $("#savedButton").innerHTML = "&times;"
+    $("#savedButton").onclick = closeSaved;
 }
 
 function removedSaved(i) {
@@ -149,9 +149,9 @@ function removedSaved(i) {
 }
 
 function closeSaved() {
-    document.getElementById("savedButton").innerText = savedSongs.length;
-    document.getElementById("savedButton").onclick = showSaved;
-    document.getElementById("savedSongs").style.display = "none";
+    $("#savedButton").innerText = savedSongs.length;
+    $("#savedButton").onclick = showSaved;
+    $("#savedSongs").style.display = "none";
 }
 
 function handleScroll() {
