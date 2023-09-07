@@ -80,18 +80,19 @@ const APIController = (function () {
 })();
 
 function getHashParams() {
-    console.log("TEST!")
     var hashParams = {};
     var e, r = /([^&;=]+)=?([^&;]*)/g,
         q = window.location.hash.substring(1);
-      while ( e = r.exec(q)) {
+    while ( e = r.exec(q)) {
         hashParams[e[1]] = decodeURIComponent(e[2]);
-      }
+    }
     console.log(hashParams)
     return hashParams;
-  };
+};
 
-  function displayPlaylists(playlists, count = 20, start = 0) {
+//Playlists.html
+
+function displayPlaylists(playlists, count = 20, start = 0) {
     console.log(playlists)
     for (let i = start; i < count; i++) {
         if (playlists[i].images.length < 1){
@@ -109,49 +110,8 @@ function getHashParams() {
         </div>`
         document.getElementById('playlistList').insertAdjacentHTML('beforeend', boxElement);
 
-    
+
     }
-}
-
-
-function showSaved() {
-    $("#savedSongsList").innerHTML = "";
-    $("#savedSongs").style.display = "block";
-    var saved = savedSongs;
-    for (let i in saved) {
-        var song = saved[i];
-        console.log(song);
-        var songBox = document.createElement("div");
-        songBox.className = "savedInfo";
-        songBox.id = "saved" + i;
-        songBox.dataset.id = i;
-        var cover = document.createElement("img");
-        cover.src = song.album.images[1].url;
-        cover.className = "savedTile";
-        cover.onclick = function () { removedSaved(this.dataset.id) };
-        songBox.appendChild(cover);
-        var songInfo = document.createElement("div");
-        songInfo.className = "savedSongInfo";
-        songInfo.innerHTML += song.name + "<br>";
-        songInfo.innerHTML += song.artists[0].name;
-        songBox.appendChild(songInfo);
-        $("#savedSongsList").appendChild(songBox);
-    }
-    $("#savedButton").innerHTML = "&times;"
-    $("#savedButton").onclick = closeSaved;
-}
-
-function removedSaved(i) {
-    uriSet.delete(savedSongs.splice(i, 1)[0].uri);
-    localStorage["savedSongs"] = JSON.stringify(savedSongs);
-    localStorage["uriSet"] = JSON.stringify(Array.from(uriSet));
-    showSaved();
-}
-
-function closeSaved() {
-    $("#savedButton").innerText = savedSongs.length;
-    $("#savedButton").onclick = showSaved;
-    $("#savedSongs").style.display = "none";
 }
 
 function handleScroll() {
@@ -187,4 +147,103 @@ function debounce(func, delay) {
         func.apply(this, args);
       }, delay);
     };
-  }
+}
+
+//Playlist.html
+
+function setCard(song) {
+    console.log(song);
+    document.getElementById('cover').src = song.album.images[0].url;
+    document.getElementById('title').innerHTML = song.name;
+    document.getElementById('artist').innerHTML = song.artists.map(obj => obj.name).join(', ');
+    document.getElementById('preview').src = song.preview_url;
+    var img = $('#cover');
+    img.imgcolr(function (img, color) {
+        // $('body').style.backgroundColor = color;
+        // console.log(color);
+        var tiny = tinycolor(color);
+        if (!tiny.isValid()) {
+            console.error(tiny)
+        }
+        const newBG = `linear-gradient(0deg, ${color} 0%, ${color} 100%), linear-gradient(180deg, rgba(255, 255, 255, 0.44) 39%, rgba(0, 0, 0, 0.88) 100%)`;
+        console.log(newBG);
+        $("body").css({background:newBG});
+    });
+}
+
+function swipeSong(i, songs, save) {
+
+    card.style.transform = 'translateX(' + (event.direction === Hammer.DIRECTION_LEFT ? '-100%' : '100%') + ')';
+    card.style.transition = 'transform 0.3s ease-out';
+
+    if (save) {
+        addLiked(songs[i])
+    }
+    i++;
+    if (i >= songs.length) {
+        //Hide Card Element
+        card.style.display = 'none';
+        $('#completed').show();
+    } else {
+        setCard(songs[i]);
+    }
+
+    setTimeout(() => {
+        card.style.transform = '';
+        card.style.transition = '';
+    }, 300);
+    return i;
+}
+
+function showLiked() {
+    console.log('DEBUG');
+    $("#savedSongsList").innerHTML = "";
+    $("#savedSongs").style.display = "block";
+    var saved = savedSongs;
+    for (let i in saved) {
+        var song = saved[i];
+        console.log(song);
+        var songBox = document.createElement("div");
+        songBox.className = "savedInfo";
+        songBox.id = "saved" + i;
+        songBox.dataset.id = i;
+        var cover = document.createElement("img");
+        cover.src = song.album.images[1].url;
+        cover.className = "savedTile";
+        cover.onclick = function () { removedSaved(this.dataset.id) };
+        songBox.appendChild(cover);
+        var songInfo = document.createElement("div");
+        songInfo.className = "savedSongInfo";
+        songInfo.innerHTML += song.name + "<br>";
+        songInfo.innerHTML += song.artists[0].name;
+        songBox.appendChild(songInfo);
+        $("#savedSongsList").appendChild(songBox);
+    }
+    $("#savedButton").onclick = closeSaved;
+}
+
+function addLiked(song) {
+    if (!uriSet.has(song.uri)) {
+        uriSet.add(song.uri);
+        savedSongs.push(song);
+        localStorage['savedSongs'] = JSON.stringify(savedSongs);
+        localStorage['uriSet'] = JSON.stringify(Array.from(uriSet));
+    }
+}
+function removeLiked(i) {
+    uriSet.delete(savedSongs.splice(i, 1)[0].uri);
+    localStorage["savedSongs"] = JSON.stringify(savedSongs);
+    localStorage["uriSet"] = JSON.stringify(Array.from(uriSet));
+    showLiked();
+}
+
+function saveLikes() {
+    var songIds = savedSongs.map(obj => obj.id).join(',');
+    var access_token = localStorage["token"];
+    APIController.saveSongs(access_token, songIds);
+}
+
+function closeLiked() {
+    $("#return").on('click', showLiked);
+    $("#savedSongs").hide();
+}
