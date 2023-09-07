@@ -5,24 +5,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&family=Dancing+Script:wght@700&family=Inter:wght@700&display=swap" rel="stylesheet">
     <title>SwipeSearch</title>
 </head>
 <body>
-    SwipeSearch
 
-    Find your next earworm with just a Swipe
-    <div id="login">
-        <img src="misc/spotify.png" class="icon" alt="Spotify Logo"> 
-        <!-- Make this div element take up more of the screen -->
-        <!-- Add a background -->
-        Log in to Spotify
-    </div>
+    <div class="home">
+        <div class="headingText">
+            <span style="font-family: Comfortaa; font-size: 32px;">
+                Find your next earworm with just a 
+            </span>
+            <span style="font-family: Dancing Script; font-size: 48px;">
+                Swipe
+            </span>
+        </div>
+        <div id="login">
+          <div class="getStarted" style="width: 31.667vw; height: 3vh;  font-size: 20px; font-family: Inter; font-weight: 700; word-wrap: break-word">Get Started</div>
+          <img class="smallIcon" style="width: 50px; height: 50px" src="misc/spotify.png" />
+        </div>
+      </div>
 
     <script>
         localStorage.clear();
         document.getElementById('login').addEventListener('click', function() {
           var client_id = 'af44c6baf2764fd5afbf4b8e6d1d79b8';
-          var redirect_uri = 'http://192.168.0.99:8080/Playlists';
+          var redirect_uri = 'http://localhost:8080/Playlists';
           var scopes = 'playlist-read-private playlist-modify-private user-library-modify';
 
           var url = 'https://accounts.spotify.com/authorize?response_type=token';          

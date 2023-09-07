@@ -4,55 +4,40 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/playlist.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins:ital,wght@1,500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/9fc0dd2675.js" crossorigin="anonymous"></script>
     <title>SwipeSearch</title>
 </head>
 <body>
-    <div id="savedButton" onclick="showSaved()">
-        0
-    </div>
-    <div id="savedSongs" class="hidden">
-        <div id="savetoLiked" class="saveButton" onClick="saveSongs()">Save Songs</div>
-        <!-- <div id="savetoPlaylist" class="saveButton">Save to Playlist</div> -->
-        <div id="savedSongsList"></div>
-    </div>
-    <a href="Playlists.html">
-        <div id="playlistBox">
-            <!-- <img id="playlistCover"> -->
-            <span id="playlistName"></span>
     
-        </div>
-    </a>
-    <div id="card">
-        <img id="cover">
+    <i id="return" class="fa-solid fa-angle-down"></i>
+    
+    <div class="playlist">
+        <div id="playing">PLAYING FROM PLAYLIST</div>
+        <div id="playlistName"></div>
+    
+    </div><i id="openOverlay" class="fa-solid fa-ellipsis-vertical"></i>
+    
+    <div id="songInfo">
+        <img id="cover"/>
         <div id="title"></div>
-        <!-- <div id="info">
-            <br>
-            <div id="artist"></div>
-            <br>
-            <div id="album"></div> -->
-            <!-- Add buttons for UNDO, LIKE, DISLIKE -->
-            <!-- Maybe move Playlist button to bottom right -->
-            <!-- Add some confirmation when clicking Save Songs button -->
-            <!-- Add Save to Playlist Function -->
-                <!-- ReColor UI (Look into featureSearch library for pulling color - Gradient to black)--> 
-                <!-- Play with Making album cover full width of Card -->
-            <!-- Have Card move with User input -->
-            <!-- Functionality when tap on album cover
-            Tapping on Album Cover shows Artist and Genre and year Released ?
-            Can use CSS blur() to blur background and show info in foreground -->
-                <!-- BUG: Swiping right re-adds songs deleted from Saved Queue  -->
-            <!-- <img src="misc/undo.webp"> -->
-            <!-- <img class="button" src="misc/like.webp">
-            <img class="button" src="misc/dislike.webp"> -->
-
-        <!-- </div> -->
-        <audio id="preview" autoplay="true">Your browser does not support the audio element.</audio>
+        <div id="artist"></div>
     </div>
+    
+    <i id="prevSong" class="fa-solid fa-backward-step"></i>
+    
+    <span id="likeSong" class="fa-stack">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa-solid fa-heart fa-stack-1x"></i>
+    </span>
+    
+    <i id="nextSong" class="fa-solid fa-forward-step"></i>
+    
+    <audio id="preview" autoplay="true">Your browser does not support the audio element.</audio>
+
     <div id="completed" style="display: none;">
         That's all the Songs!<br><br>
         <a href="Playlists.html" id="return">Return to Playlists</a>
@@ -70,28 +55,19 @@
             console.log(song);
             document.getElementById('cover').src = song.album.images[0].url;
             document.getElementById('title').innerHTML = song.name;
-            // document.getElementById('artist').innerHTML = song.artists.map(obj => obj.name).join(', ');
-            // document.getElementById('album').innerHTML = song.album.name;
+            document.getElementById('artist').innerHTML = song.artists.map(obj => obj.name).join(', ');
             document.getElementById('preview').src = song.preview_url;
             var img = $('#cover');
             img.imgcolr(function (img, color) {
                 // $('body').style.backgroundColor = color;
                 // console.log(color);
                 var tiny = tinycolor(color);
-                console.log('TINY', tiny.getBrightness());
                 if (!tiny.isValid()) {
-                    console.log("PROBLEM!!!!")
+                    console.error(tiny)
                 }
-                $("body").css('background-color', color);
-                if (tiny.getBrightness() < 100) {
-                    $("body").css('color', 'white')
-                    $("body").css('background', `linear-gradient(180deg, ${color} 80%, #FFFFFF 100%)`);
-                    $('#playlistName').css('color', 'black');
-                } else {
-                    $("body").css('background', `linear-gradient(180deg, ${color} 80%, #000000 100%)`);
-                    $("body").css('color', 'black')
-                    $('#playlistName').css('color', 'white');
-                }
+                const newBG = `linear-gradient(0deg, ${color} 0%, ${color} 100%), linear-gradient(180deg, rgba(255, 255, 255, 0.44) 39%, rgba(0, 0, 0, 0.88) 100%)`;
+                console.log(newBG);
+                $("body").css({background:newBG});
             });
         }
 
@@ -103,9 +79,9 @@
 
         var savedSongs = localStorage['savedSongs'] ? JSON.parse(localStorage['savedSongs']) : [];
         var uriSet = localStorage['uriSet'] ? new Set(JSON.parse(localStorage['uriSet'])) : new Set();
-        document.getElementById('savedButton').innerText = savedSongs.length;
+        // document.getElementById('savedButton').innerText = savedSongs.length;
 
-        const card = document.getElementById('card');
+        const card = document.getElementById('songInfo');
         const hammer = new Hammer(card);
 
         (async function() {
@@ -124,7 +100,7 @@
                         if (!uriSet.has(songs[i].uri)) {
                             uriSet.add(songs[i].uri);
                             savedSongs.push(songs[i]);
-                            document.getElementById('savedButton').innerText = savedSongs.length;
+                            // document.getElementById('savedButton').innerText = savedSongs.length;
                             localStorage['savedSongs'] = JSON.stringify(savedSongs);
                             localStorage['uriSet'] = JSON.stringify(Array.from(uriSet));
                         }
@@ -150,7 +126,7 @@
                 if (event.direction === Hammer.DIRECTION_RIGHT && !uriSet.has(songs[i].uri)) {
                     uriSet.add(songs[i].uri);
                     savedSongs.push(songs[i]);
-                    document.getElementById('savedButton').innerText = savedSongs.length;
+                    // document.getElementById('savedButton').innerText = savedSongs.length;
                     localStorage['savedSongs'] = JSON.stringify(savedSongs);
                     localStorage['uriSet'] = JSON.stringify(Array.from(uriSet));
                 }
