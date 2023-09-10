@@ -5,6 +5,10 @@ body {
     background-blend-mode: multiply;
 }
 
+a {
+    text-decoration: none;
+}
+
 .fa-solid {
     font-size: 1.2em;
     color: white;
@@ -43,23 +47,21 @@ body {
 
 #songInfo {
     position: absolute;
-    left: 6vw;
+    left: 50%;
+    transform: translate(-50%);
     top: 20dvh;
     height: 56dvh;
     width: 86vw;
+    max-width: 500px;
 }
 
 #cover {
-    width: 100%;
-    left: 0px;
-    top: 0px;
-    position: absolute;
+    width: 100%;    
+    max-width: 500px;
+    padding-bottom: 3%;
 }
 
 #title {
-    left: 0px;
-    top: 336px;
-    position: absolute;
     color: white;
     font-size: 24px;
     font-family: Roboto;
@@ -73,9 +75,6 @@ body {
 }
 
 #artist {
-    left: 0px;
-    top: 380px;
-    position: absolute;
     color: white;
     font-size: 16px;
     font-family: Inter;
@@ -86,21 +85,22 @@ body {
 
 #prevSong {
     left: 25vw;
-    bottom: 89px;
+    bottom: 11vh;
     position: absolute;
     font-size: 1.3em;
 }
 
 #likeSong {
-    left: 41vw;
-    bottom: 75px;
+    left: 50%;
+    transform: translate(-50%);
+    bottom: 10.5vh;
     position: absolute;
     font-size: 1.5em;
 }
 
 #nextSong {
     right: 25vw;
-    bottom: 89px;
+    bottom: 11vh;
     position: absolute;
     font-size: 1.3em;
 }

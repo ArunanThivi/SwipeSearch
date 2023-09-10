@@ -86,14 +86,12 @@ function getHashParams() {
     while ( e = r.exec(q)) {
         hashParams[e[1]] = decodeURIComponent(e[2]);
     }
-    console.log(hashParams)
     return hashParams;
 };
 
 //Playlists.html
 
 function displayPlaylists(playlists, count = 20, start = 0) {
-    console.log(playlists)
     for (let i = start; i < count; i++) {
         if (playlists[i].images.length < 1){
             continue;
@@ -105,8 +103,8 @@ function displayPlaylists(playlists, count = 20, start = 0) {
         var boxElement = `
         <div class='songInfo' id='playlist${i}'>
         <a href='Playlist.html?playlist=${id}'><img src=${cover} class='playlistTile link'></a><br>
-        ${name}<br>
-        By: ${owner}<br>
+        <span class='playlistName'>${name}</span><br>
+        <span class='playlistAuthor'>By: ${owner}</span><br>
         </div>`
         document.getElementById('playlistList').insertAdjacentHTML('beforeend', boxElement);
 
@@ -132,7 +130,6 @@ function handleScroll() {
         .catch(error => {
             // Handle any errors that occur during the API call
             console.error('Error fetching playlists:', error);
-            console.log("token " + access_token)
         });
     }
 }
@@ -152,7 +149,6 @@ function debounce(func, delay) {
 //Playlist.html
 
 function setCard(song) {
-    console.log(song);
     document.getElementById('cover').src = song.album.images[0].url;
     document.getElementById('title').innerHTML = song.name;
     document.getElementById('artist').innerHTML = song.artists.map(obj => obj.name).join(', ');
@@ -165,16 +161,14 @@ function setCard(song) {
         if (!tiny.isValid()) {
             console.error(tiny)
         }
-        const newBG = `linear-gradient(0deg, ${color} 0%, ${color} 100%), linear-gradient(180deg, rgba(255, 255, 255, 0.44) 39%, rgba(0, 0, 0, 0.88) 100%)`;
-        console.log(newBG);
+        const newBG = `linear-gradient(0deg, ${color} 0%, ${color} 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.44) 39%, rgba(0, 0, 0, 0.88) 100%)`;
         $("body").css({background:newBG});
     });
 }
 
 function swipeSong(i, songs, save) {
-
-    card.style.transform = 'translateX(' + (event.direction === Hammer.DIRECTION_LEFT ? '-100%' : '100%') + ')';
-    card.style.transition = 'transform 0.3s ease-out';
+    card.style.transform = 'translateX(' + (save ? '100%' : '-200%') + ')';
+    card.style.transition = 'transform 0.5s ease-out';
 
     if (save) {
         addLiked(songs[i])
@@ -195,10 +189,23 @@ function swipeSong(i, songs, save) {
     return i;
 }
 
+function undoSwipe(i, songs) {
+    card.style.transform = 'translateX(-200)';
+    card.style.transition = 'transform 0.5s ease-out';
+
+    i = Math.max(i-1, 0)
+    setCard(songs[i]);
+
+    setTimeout(() => {
+        card.style.transform = '';
+        card.style.transition = '';
+    }, 300);
+    return i;
+}
+
 function showLiked() {
-    console.log('DEBUG');
-    $("#savedSongsList").innerHTML = "";
-    $("#savedSongs").style.display = "block";
+    $("#savedSongsList").html("");
+    $("#savedSongs").show();
     var saved = savedSongs;
     for (let i in saved) {
         var song = saved[i];
@@ -217,9 +224,9 @@ function showLiked() {
         songInfo.innerHTML += song.name + "<br>";
         songInfo.innerHTML += song.artists[0].name;
         songBox.appendChild(songInfo);
-        $("#savedSongsList").appendChild(songBox);
+        document.getElementById('savedSongsList').appendChild(songBox);
     }
-    $("#savedButton").onclick = closeSaved;
+    $("#savedButton").onclick = closeLiked;
 }
 
 function addLiked(song) {
