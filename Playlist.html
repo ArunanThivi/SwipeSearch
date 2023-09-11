@@ -25,10 +25,12 @@
 
         <i id="openOverlay" class="fa-solid fa-ellipsis-vertical" onclick="showLiked()"></i>
         
-        <div id="songInfo">
+        <div id="songInfo" class="card">
             <img id="cover"/>
             <div id="title"></div>
             <div id="artist"></div>
+        </div>
+        <div id='dummyCard' class="card">
         </div>
         
         <i id="prevSong" class="fa-solid fa-backward-step"></i>
@@ -41,8 +43,6 @@
         <i id="nextSong" class="fa-solid fa-forward-step"></i>
         
         <audio id="preview" autoplay="true">Your browser does not support the audio element.</audio>
-
-        
 
         <div id="completed" style="display: none;">
             That's all the Songs!<br><br>
@@ -60,13 +60,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="js/imgcolr.html5.min.js"></script>
-    <script src="js/tinycolor.js"></script>
     <script>
 
         var savedSongs = localStorage['savedSongs'] ? JSON.parse(localStorage['savedSongs']) : [];
         var uriSet = localStorage['uriSet'] ? new Set(JSON.parse(localStorage['uriSet'])) : new Set();
 
         const card = document.getElementById('songInfo');
+        const dummy = document.getElementById('dummyCard');
         const hammer = new Hammer(card);
 
         (async function() {

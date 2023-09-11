@@ -4,6 +4,7 @@ body {
     width: 100vw;
     height: 100svh;
     background-blend-mode: multiply;
+    overflow: hidden;
 }
 
 a {
@@ -46,7 +47,7 @@ a {
     top: 2.5svh;
 }
 
-#songInfo {
+.card {
     position: absolute;
     left: 50%;
     transform: translate(-50%);
@@ -54,6 +55,10 @@ a {
     height: 56dvh;
     width: 86vw;
     max-width: 500px;
+}
+
+.card.offLeft {
+    left: -100%;
 }
 
 #cover {

@@ -149,27 +149,20 @@ function debounce(func, delay) {
 //Playlist.html
 
 function setCard(song) {
+    $('#dummyCard').html($('#songInfo').html())
     document.getElementById('cover').src = song.album.images[0].url;
     document.getElementById('title').innerHTML = song.name;
     document.getElementById('artist').innerHTML = song.artists.map(obj => obj.name).join(', ');
     document.getElementById('preview').src = song.preview_url;
     var img = $('#cover');
     img.imgcolr(function (img, color) {
-        // $('body').style.backgroundColor = color;
-        // console.log(color);
-        var tiny = tinycolor(color);
-        if (!tiny.isValid()) {
-            console.error(tiny)
-        }
         const newBG = `linear-gradient(0deg, ${color} 0%, ${color} 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.44) 39%, rgba(0, 0, 0, 0.88) 100%)`;
         $("body").css({background:newBG});
     });
 }
 
 function swipeSong(i, songs, save) {
-    card.style.transform = 'translateX(' + (save ? '100%' : '-200%') + ')';
-    card.style.transition = 'transform 0.5s ease-out';
-
+    
     if (save) {
         addLiked(songs[i])
     }
@@ -181,24 +174,27 @@ function swipeSong(i, songs, save) {
     } else {
         setCard(songs[i]);
     }
-
+    
+    dummy.style.transform = 'translateX(' + (save ? '100%' : '-200%') + ')';
+    dummy.style.transition = 'transform 0.5s ease-out';
+    
     setTimeout(() => {
-        card.style.transform = '';
-        card.style.transition = '';
+        dummy.style.transform = '';
+        dummy.style.transition = '';
+        dummy.innerHTML = "";
     }, 300);
     return i;
 }
 
 function undoSwipe(i, songs) {
-    card.style.transform = 'translateX(-200)';
+    i = Math.max(i-1, 0);
     card.style.transition = 'transform 0.5s ease-out';
 
-    i = Math.max(i-1, 0)
     setCard(songs[i]);
 
     setTimeout(() => {
-        card.style.transform = '';
         card.style.transition = '';
+        dummy.innerHTML = "";
     }, 300);
     return i;
 }
@@ -215,11 +211,11 @@ function showLiked() {
         var songBox = document.createElement("div");
         songBox.className = "savedInfo";
         songBox.id = "saved" + i;
-        songBox.dataset.id = i;
         var cover = document.createElement("img");
         cover.src = song.album.images[1].url;
         cover.className = "savedTile";
-        cover.onclick = function () { removedSaved(this.dataset.id) };
+        cover.dataset.id = i;
+        cover.onclick = function () { removeLiked(this) };
         songBox.appendChild(cover);
         var songInfo = document.createElement("div");
         songInfo.className = "savedSongInfo";
@@ -239,7 +235,9 @@ function addLiked(song) {
         localStorage['uriSet'] = JSON.stringify(Array.from(uriSet));
     }
 }
-function removeLiked(i) {
+function removeLiked(song) {
+    const i = song.dataset.id;
+    console.log(i);
     uriSet.delete(savedSongs.splice(i, 1)[0].uri);
     localStorage["savedSongs"] = JSON.stringify(savedSongs);
     localStorage["uriSet"] = JSON.stringify(Array.from(uriSet));
