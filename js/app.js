@@ -204,12 +204,14 @@ function undoSwipe(i, songs) {
 }
 
 function showLiked() {
-    $("#savedSongsList").html("");
-    $("#savedSongs").show();
-    var saved = savedSongs;
+    $('#main').addClass('blur');
+    console.info('showLiked')
+    document.getElementById("savedSongsList").innerHTML = "";
+    document.getElementById('overlay').classList.add('active');
+    document.getElementById('overlayExit').style.display = 'block';
+    var saved = JSON.parse(localStorage["savedSongs"]);;
     for (let i in saved) {
         var song = saved[i];
-        console.log(song);
         var songBox = document.createElement("div");
         songBox.className = "savedInfo";
         songBox.id = "saved" + i;
@@ -224,9 +226,9 @@ function showLiked() {
         songInfo.innerHTML += song.name + "<br>";
         songInfo.innerHTML += song.artists[0].name;
         songBox.appendChild(songInfo);
-        document.getElementById('savedSongsList').appendChild(songBox);
+        document.getElementById("savedSongsList").appendChild(songBox);
     }
-    $("#savedButton").onclick = closeLiked;
+    document.getElementById("overlayExit").onclick = closeLiked;
 }
 
 function addLiked(song) {
@@ -247,10 +249,14 @@ function removeLiked(i) {
 function saveLikes() {
     var songIds = savedSongs.map(obj => obj.id).join(',');
     var access_token = localStorage["token"];
-    APIController.saveSongs(access_token, songIds);
+    // APIController.saveSongs(access_token, songIds);
+    console.log("Saved to Account");
 }
 
 function closeLiked() {
-    $("#return").on('click', showLiked);
-    $("#savedSongs").hide();
+    console.info('hideLiked')
+    $('#main').removeClass('blur');
+    document.getElementById("openOverlay").onclick = showLiked;
+    document.getElementById('overlay').classList.remove('active');
+    $("#overlayExit").hide();
 }

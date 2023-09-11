@@ -1,4 +1,5 @@
 body {
+    user-select: none;
     margin: 0;
     width: 100vw;
     height: 100svh;
@@ -103,4 +104,90 @@ a {
     bottom: 11vh;
     position: absolute;
     font-size: 1.3em;
+}
+
+.overlay {
+    color: white;
+    width: 100%;
+    height: 25dvh;
+    background-color: #7B00FFB2;
+    font-family: 'Roboto', sans-serif;
+    z-index: 99;
+    position: fixed;
+    top: -100%;
+    overflow: auto;
+    font-size: 12px;
+    font-weight: 500;
+    transition: top 0.3s ease;
+}
+
+.saveButton {
+    background-color: #E40076;
+    text-align: center;
+    display: inline-block;
+    border-radius: 16px;
+    height: 12%;
+    padding-top: 2%;
+    margin-top: 16px;
+    width: 27.778%;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.saveButton:active {
+    transform: translateY(2px); /* Move the button down slightly */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+#savetoLiked {
+    margin-left: 13%;
+}
+
+#savetoPlaylist {
+    margin-left: 20%;
+}
+
+#savedSongsList {
+    margin-left: 7%;
+    margin-top: 7%;
+    display: flex;
+    flex-direction: column;
+}
+
+.savedInfo {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+}
+
+.savedSongInfo {
+    width: 80vw;
+    margin-left: 5%;
+}
+
+.savedTile {
+    height: 50px;
+}
+
+.savedTitle {
+    font-size: 14px;
+}
+
+.savedAuthor {
+    font-style: italic;
+}
+
+.blur {
+    filter: blur(4px);
+}
+
+#overlayExit {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+}
+
+.overlay.active {
+    top: 0;
+    display: block;
 }
