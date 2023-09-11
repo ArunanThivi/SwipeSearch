@@ -187,15 +187,17 @@ function swipeSong(i, songs, save) {
 }
 
 function undoSwipe(i, songs) {
+    card.style.transition = '';
     i = Math.max(i-1, 0);
-    card.style.transition = 'transform 0.5s ease-out';
-
-    setCard(songs[i]);
-
+    card.style.left = '-100%'
+    
     setTimeout(() => {
-        card.style.transition = '';
+        setCard(songs[i]);
+        card.style.transition = 'left 0.5s ease-in';
+        card.style.left = '50%'
         dummy.innerHTML = "";
-    }, 300);
+    }, 0);
+
     return i;
 }
 
