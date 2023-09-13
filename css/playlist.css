@@ -129,14 +129,16 @@ a {
 .saveButton {
     background-color: #E40076;
     text-align: center;
-    display: inline-block;
+    position: fixed;
+    display: none;
     border-radius: 16px;
-    height: 12%;
+    height: 3%;
     padding-top: 2%;
-    margin-top: 16px;
+    top: 2%;
     width: 27.778%;
     font-size: 12px;
     font-weight: 700;
+    transition: display 0.3s ease;
 }
 
 .saveButton:active {
@@ -145,16 +147,16 @@ a {
 }
 
 #savetoLiked {
-    margin-left: 13%;
+    left: 12%;
 }
 
 #savetoPlaylist {
-    margin-left: 20%;
+    left: 60%;
 }
 
 #savedSongsList {
     margin-left: 7%;
-    margin-top: 7%;
+    margin-top: 15%;
     display: flex;
     flex-direction: column;
 }

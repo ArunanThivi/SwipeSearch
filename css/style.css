@@ -84,11 +84,6 @@ body {
     margin: 0;
     background: linear-gradient(180deg, #7B00FF 42%, #FA00FF 100%);
     background-attachment: fixed;
-    /* flex-direction: column;
-    justify-content: flex-start;
-    align-items: center; */
-    gap: 274.49px;
-    /* display: inline-flex; */
     width: 100vw;
     height: 100dvh;
 }
@@ -143,7 +138,7 @@ input {
     /* border-radius: 25%; */
     /* color: #37373780; */
     text-align: center;
-    display: inline-block;
+    display: block;
     font-family: 'Inter', sans-serif;
     font-weight: 300;
     border-radius: 16px;

@@ -19,8 +19,8 @@ const APIController = (function () {
         return data;
     }
 
-    const _searchItems = async (token, query, type) => {
-        const result = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=${type}`, {
+    const _searchItems = async (token, query, type, offset) => {
+        const result = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=${type}&offset=${offset}`, {
             method: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
         });
@@ -73,7 +73,7 @@ const APIController = (function () {
             return _getPlaylists(token, offset);
         },
         searchItems(token, query, type) {
-            return _searchItems(token, query, type);
+            return _searchItems(token, query, type, offset);
         },
         getPlaylistSongs(token, playlistId) {
             return _getPlaylistSongs(token, playlistId);
@@ -92,13 +92,15 @@ const APIController = (function () {
 })();
 
 function getHashParams() {
-    var hashParams = {};
+    var params = {};
+    var searchParams = new URLSearchParams(window.location.search);
     var e, r = /([^&;=]+)=?([^&;]*)/g,
         q = window.location.hash.substring(1);
     while ( e = r.exec(q)) {
-        hashParams[e[1]] = decodeURIComponent(e[2]);
+        params[e[1]] = decodeURIComponent(e[2]);
     }
-    return hashParams;
+    searchParams.forEach((v, k) => params[k] = v);
+    return params;
 };
 
 //Playlists.html
@@ -128,21 +130,36 @@ function handleScroll() {
     const scrollHeight = document.documentElement.scrollHeight;
     const scrollTop = document.documentElement.scrollTop;
     const clientHeight = document.documentElement.clientHeight;
-
     if (scrollHeight - scrollTop - clientHeight < 200) {
-        APIController.getPlaylists(access_token, offset).then(playlists => {
+        if (term) {
+            APIController.searchItems(access_token, term, 'playlist', offset).then(response => {
+                // Process the fetched playlists
+                playlists = response.playlists;
+                offset += 20;
+                displayPlaylists(playlists.items, playlists.items.length, 0);
+                if (playlists.next == null) {
+                    document.removeEventListener('scroll', handleScroll);
+                }
+            })
+            .catch(error => {
+                // Handle any errors that occur during the API call
+                console.error('Error fetching playlists:', error);
+            });
+        } else {
+            APIController.getPlaylists(access_token, offset).then(playlists => {
             // Process the fetched playlists
-            offset += 20;
-            console.log('Fetched playlists:', playlists);
-            displayPlaylists(playlists.items, playlists.items.length, 0);
-            if (playlists.next == null) {
-                document.removeEventListener('scroll', handleScroll);
-            }
-        })
-        .catch(error => {
-            // Handle any errors that occur during the API call
-            console.error('Error fetching playlists:', error);
-        });
+                offset += 20;
+                displayPlaylists(playlists.items, playlists.items.length, 0);
+                if (playlists.next == null) {
+                    document.removeEventListener('scroll', handleScroll);
+                }
+            })
+            .catch(error => {
+                // Handle any errors that occur during the API call
+                console.error('Error fetching playlists:', error);
+            });
+        }
+        
     }
 }
 
@@ -217,8 +234,10 @@ function showLiked() {
     $('#main').addClass('blur');
     console.info('showLiked')
     document.getElementById("savedSongsList").innerHTML = "";
+    $('.saveButton').show();
     document.getElementById('overlay').classList.add('active');
     document.getElementById('overlayExit').style.display = 'block';
+    // $('.saveButton').css('display', 'inline-block');
     var saved = JSON.parse(localStorage["savedSongs"]);;
     for (let i in saved) {
         var song = saved[i];
@@ -269,6 +288,7 @@ function closeLiked() {
     console.info('hideLiked')
     $('#main').removeClass('blur');
     document.getElementById("openOverlay").onclick = showLiked;
+    $('.saveButton').hide();
     document.getElementById('overlay').classList.remove('active');
     $("#overlayExit").hide();
 }
