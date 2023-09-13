@@ -42,13 +42,26 @@
                 access_token = localStorage["token"];
             }
             var playlists;
-            if (params.term) {
-                term = params.term;
-                response = await APIController.searchItems(access_token, term, 'playlist', offset);
-                playlists = response.playlists;
+            if (params.term || localStorage['term']) {
+                
+                if ('term' in params) {
+                    term = params.term;
+                    localStorage['term'] = term 
+                } else {
+                    term = localStorage['term'];
+                }
+                
+                if (term == "") {
+                    playlists = await APIController.getPlaylists(access_token, offset);
+                } else {
+                    response = await APIController.searchItems(access_token, term, 'playlist', offset);
+                    playlists = response.playlists;
+                }
+
             } else {
                 playlists = await APIController.getPlaylists(access_token, offset);
             }
+            
             offset += 20;
             playlists = playlists.items;
             displayPlaylists(playlists);
