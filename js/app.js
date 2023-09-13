@@ -19,6 +19,15 @@ const APIController = (function () {
         return data;
     }
 
+    const _searchItems = async (token, query, type) => {
+        const result = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=${type}`, {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+        const data = await result.json();
+        return data;
+    }
+
     const _getPlaylistSongs = async (token, playlistId) => {
         const result = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?market=US&fields=items(track)`, {
             method: 'GET',
@@ -62,6 +71,9 @@ const APIController = (function () {
         },
         getPlaylists(token, offset) {
             return _getPlaylists(token, offset);
+        },
+        searchItems(token, query, type) {
+            return _searchItems(token, query, type);
         },
         getPlaylistSongs(token, playlistId) {
             return _getPlaylistSongs(token, playlistId);
