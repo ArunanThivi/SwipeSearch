@@ -198,3 +198,21 @@ a {
     top: 0;
     display: block;
 }
+
+#prevPage {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    text-decoration: none;
+    font-family: Inter;
+    font-weight: 700;
+    background-color: #E40076;
+    text-align: center;
+    position: fixed;
+    border-radius: 16px;
+    height: 12%;
+    padding-top: 2%;
+    width: 50%;
+    font-size: 32px;
+}

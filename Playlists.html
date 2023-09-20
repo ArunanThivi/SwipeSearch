@@ -61,6 +61,11 @@
             } else {
                 playlists = await APIController.getPlaylists(access_token, offset);
             }
+            console.log(playlists.error);
+            if (playlists.error) {
+                localStorage.removeItem('token');
+                location.reload();
+            }
             
             offset += 20;
             playlists = playlists.items;

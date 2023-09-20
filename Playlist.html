@@ -46,7 +46,7 @@
 
         <div id="completed" style="display: none;">
             That's all the Songs!<br><br>
-            <a href="Playlists.html" id="return">Return to Playlists</a>
+            <a href="Playlists.html" id="prevPage">Return to Playlists</a>
         </div>
     </div>
     <div id="overlay" class="overlay">
@@ -67,7 +67,7 @@
 
         const card = document.getElementById('songInfo');
         const dummy = document.getElementById('dummyCard');
-        const hammer = new Hammer(card);
+        const hammer = new Hammer(dummy);
 
         (async function() {
             var access_token = localStorage["token"];
