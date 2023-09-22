@@ -317,6 +317,7 @@ function removeLiked(song) {
 }
 
 function saveLikes() {
+    var songIds = savedSongs.map(obj => obj.id).join(',');
     var access_token = localStorage["token"];
     APIController.saveSongs(access_token, songIds);
 }
