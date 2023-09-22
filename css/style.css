@@ -1,4 +1,4 @@
-#login {
+/* #login {
     font-family: Arial, Helvetica, sans-serif;
     position: absolute;
     top: 50%;
@@ -9,20 +9,20 @@
     justify-content: space-evenly;
     width: 200px;
     height: 60px;
-    /* line-height: 50px; */
-    /* margin-left: 30%;
-    margin-top: 100%; */
+    line-height: 50px;
+    margin-left: 30%;
+    margin-top: 100%;
     padding: 5px;
     border-radius: 5px;
     border: 3px solid #1ed760;
 }
 .icon {
     height: 50px;
-    /* padding-left: 10%; */
+     padding-left: 10%;
 }
 
 #playlistList {
-    /* margin: 3%; */
+    margin: 3%;
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
@@ -34,11 +34,7 @@
     font-size: small;
 }
 
-.playlistTile {
-    height: 140px;
-    width: 140px;
-    object-fit: cover;
-}
+
 
 .savedTile {
     height: 50px;
@@ -82,4 +78,114 @@
 
 .hidden {
     display: none;
+} */
+
+body {
+    margin: 0;
+    background: linear-gradient(180deg, #7B00FF 42%, #FA00FF 100%);
+    background-attachment: fixed;
+    width: 100vw;
+    height: 100dvh;
+}
+
+input {
+    border: none;
+    margin: 0;
+    display: inline;
+    background: transparent;
+}
+
+
+.headingText {
+    width: 67.778vw;
+    color: white;
+    line-height: 5.3125em;
+    padding-top: 12vw;
+    padding-left: 20%;
+}
+
+#login {
+    align-self: stretch;
+    height: 8.125vh;
+    width: 45%;
+    margin: auto;
+    margin-top: 3vh;
+    padding: 1% 5%;
+    background: #1DCB4E;
+    border-radius: 25px;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    color: white;
+}
+
+.smallIcon {
+    width: 50px;
+    height: 50px;
+}
+
+.getStarted {
+    width: 31.667vw;
+    font-size: 20px;
+    font-family: Inter;
+    font-weight: 700;
+}
+
+#searchBar {
+    width: 83vw;
+    border: 1px solid #000000;
+    background-color: rgb(230, 230, 230);
+    /* border-radius: 25%; */
+    /* color: #37373780; */
+    text-align: center;
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    border-radius: 16px;
+    /* height: 12%; */
+    padding: 3%;
+    margin-top: 35px;
+    margin-left: 50%;
+    transform: translate(-50%);
+    height: 22px;
+    line-height: 22px;
+}
+
+#searchText {
+    transition: width .8s ease;
+    width: 100%;
+}
+
+#playlistList {
+    margin-left: 5%;
+    margin-top: 7.5%;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    color: white;
+}
+
+.songInfo {
+    flex-basis: 35vw;
+    padding: 7px;
+    font-size: small;
+}
+
+.playlistTile {
+    height: 100px;
+    object-fit: cover;
+}
+
+.playlistName {
+    font-size: 1.2em;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+}
+
+.playlistAuthor {
+    font-size: 1em;
+    font-family: 'Roboto', sans-serif;
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1em; 
 }
