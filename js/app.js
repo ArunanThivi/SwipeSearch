@@ -11,7 +11,7 @@ const APIController = (function () {
     }
 
     const _getPlaylists = async (token, offset) => {
-        const result = await fetch(`https://api.spotify.com/v1/me/playlists?offset=${offset}`, {
+        const result = await fetch(`https://api.spotify.com/v1/me/playlists?limit=50&offset=${offset}`, {
             method: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
         });
@@ -61,9 +61,16 @@ const APIController = (function () {
             method: 'PUT',
             headers: { 'Authorization': 'Bearer ' + token },
         });
+        return result;
     };
 
-    // const _saveToPlaylist = async (token, playlistId, ids) => {
+    const _saveToPlaylist = async (token, playlistId, ids) => {
+        const result = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?uris=${ids}`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+        return result;
+    };
 
     return {
         getProfile(token) {
@@ -86,6 +93,9 @@ const APIController = (function () {
         },
         saveSongs(token, ids) {
             return _saveSongs(token, ids);
+        },
+        saveToPlaylist(token, playlistId, ids) {
+            return _saveToPlaylist(token, playlistId, ids);
         }
     }
 
@@ -135,7 +145,7 @@ function handleScroll() {
             APIController.searchItems(access_token, term, 'playlist', offset).then(response => {
                 // Process the fetched playlists
                 playlists = response.playlists;
-                offset += 20;
+                offset += 50;
                 displayPlaylists(playlists.items, playlists.items.length, 0);
                 if (playlists.next == null) {
                     document.removeEventListener('scroll', handleScroll);
@@ -148,7 +158,7 @@ function handleScroll() {
         } else {
             APIController.getPlaylists(access_token, offset).then(playlists => {
             // Process the fetched playlists
-                offset += 20;
+                offset += 50;
                 displayPlaylists(playlists.items, playlists.items.length, 0);
                 if (playlists.next == null) {
                     document.removeEventListener('scroll', handleScroll);
@@ -232,13 +242,13 @@ function undoSwipe(i, songs) {
 
 function showLiked() {
     $('#main').addClass('blur');
-    console.info('showLiked')
+    $('#overlayTwoHide').hide();
     document.getElementById("savedSongsList").innerHTML = "";
     $('.saveButton').show();
     document.getElementById('overlay').classList.add('active');
     document.getElementById('overlayExit').style.display = 'block';
     // $('.saveButton').css('display', 'inline-block');
-    var saved = JSON.parse(localStorage["savedSongs"]);;
+    var saved = localStorage["savedSongs"] ? JSON.parse(localStorage["savedSongs"]) : {};
     for (let i in saved) {
         var song = saved[i];
         var songBox = document.createElement("div");
@@ -260,6 +270,36 @@ function showLiked() {
     document.getElementById("overlayExit").onclick = closeLiked;
 }
 
+function showPlaylists() {
+    const overlay = $('#overlayTwo')
+    document.getElementById('playlistList').innerText = ''
+    overlay.toggleClass('active');
+    $('#overlayTwoHide').show();
+    var access_token = localStorage["token"];
+    APIController.getPlaylists(access_token, 0).then((promise) => {
+        APIController.getProfile(access_token).then(({id}) => {
+            const playlists = promise.items.filter((item) => item.owner.id === id);
+            for (let i in playlists) {
+                var item = playlists[i];
+                var box = document.createElement("div");
+                box.innerHTML += item.name;
+                box.dataset.id = item.id;
+                box.onclick = function() { saveToPlaylist(this) };
+                document.getElementById('playlistList').appendChild(box);
+            }
+        })
+
+    })
+    
+}
+
+function saveToPlaylist(song) {
+    const access_token = localStorage['token']
+    const id = song.dataset.id
+    const URIs = JSON.parse(localStorage['uriSet']).join(',')
+    APIController.saveToPlaylist(access_token, id, URIs)
+}
+
 function addLiked(song) {
     if (!uriSet.has(song.uri)) {
         uriSet.add(song.uri);
@@ -270,7 +310,6 @@ function addLiked(song) {
 }
 function removeLiked(song) {
     const i = song.dataset.id;
-    console.log(i);
     uriSet.delete(savedSongs.splice(i, 1)[0].uri);
     localStorage["savedSongs"] = JSON.stringify(savedSongs);
     localStorage["uriSet"] = JSON.stringify(Array.from(uriSet));
@@ -278,14 +317,11 @@ function removeLiked(song) {
 }
 
 function saveLikes() {
-    var songIds = savedSongs.map(obj => obj.id).join(',');
     var access_token = localStorage["token"];
-    // APIController.saveSongs(access_token, songIds);
-    console.log("Saved to Account");
+    APIController.saveSongs(access_token, songIds);
 }
 
 function closeLiked() {
-    console.info('hideLiked')
     $('#main').removeClass('blur');
     document.getElementById("openOverlay").onclick = showLiked;
     $('.saveButton').hide();

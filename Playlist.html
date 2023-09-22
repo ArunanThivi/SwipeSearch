@@ -51,7 +51,9 @@
     </div>
     <div id="overlay" class="overlay">
         <div id="savetoLiked" class="saveButton" onClick="saveLikes()">Save Songs</div>
-        <div id="savetoPlaylist" class="saveButton">Save to Playlist</div>
+        <div id="savetoPlaylist" class="saveButton" onClick="showPlaylists()">Save to Playlist</div>
+        <div id="overlayTwo" class="popup"><div id='playlistList' ></div></div>
+        <div id="overlayTwoHide" onClick="$('#overlayTwo').removeClass('active')"></div>
         <div id="savedSongsList"></div>
     </div>
     <div id="overlayExit" style="display: none;" onclick="closeLiked()"></div>

@@ -34,9 +34,8 @@
             }
             const params = getHashParams();
             console.log(params);
-            if (!localStorage["token"]) {    
+            if (!localStorage["token"]) {
                 access_token = params.access_token;
-                console.log("access_token: " + access_token);              
                 localStorage["token"] = access_token;
             } else {
                 access_token = localStorage["token"];
@@ -64,7 +63,7 @@
             console.log(playlists.error);
             if (playlists.error) {
                 localStorage.removeItem('token');
-                location.reload();
+                window.location.href = 'index.html'
             }
             
             offset += 20;

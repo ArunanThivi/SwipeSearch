@@ -117,7 +117,7 @@ a {
     height: 25dvh;
     background-color: #7B00FFB2;
     font-family: 'Roboto', sans-serif;
-    z-index: 99;
+    z-index: 98;
     position: fixed;
     top: -100%;
     overflow: auto;
@@ -215,4 +215,34 @@ a {
     padding-top: 2%;
     width: 50%;
     font-size: 32px;
+}
+
+#overlayTwo {
+    height: 25dvh;
+    margin: 0;
+    width: 50%;
+    background-color: #5001A5;
+    z-index: 99;
+    position: fixed;
+    right: -100%;
+    overflow: hidden;
+    transition: right 0.3s ease;
+    font-size: 16px;
+}
+#overlayTwo.active {
+    right: 0%;
+}
+#overlayTwoHide {
+    height: 25dvh;
+    margin: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 99;
+    position: fixed;
+    overflow: hidden;
+}
+#playlistList {
+    padding: 5%;
+    line-height: 1.5em;
+    overflow: auto;
 }
