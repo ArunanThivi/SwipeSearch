@@ -283,6 +283,7 @@ function showPlaylists() {
                 var item = playlists[i];
                 var box = document.createElement("div");
                 box.innerHTML += item.name;
+                box.classList.add('playlistItem');
                 box.dataset.id = item.id;
                 box.onclick = function() { saveToPlaylist(this) };
                 document.getElementById('playlistList').appendChild(box);
@@ -296,8 +297,14 @@ function showPlaylists() {
 function saveToPlaylist(song) {
     const access_token = localStorage['token']
     const id = song.dataset.id
-    const URIs = JSON.parse(localStorage['uriSet']).join(',')
-    APIController.saveToPlaylist(access_token, id, URIs)
+    const URIs = localStorage['uriSet'] ? JSON.parse(localStorage['uriSet']).join(',') : {};
+    APIController.saveToPlaylist(access_token, id, URIs).then((res) => {
+        if (res.status != 201){
+            showAlert(true);
+        } else {
+            showAlert(false)
+        }
+    })
 }
 
 function addLiked(song) {
@@ -319,7 +326,13 @@ function removeLiked(song) {
 function saveLikes() {
     var songIds = savedSongs.map(obj => obj.id).join(',');
     var access_token = localStorage["token"];
-    APIController.saveSongs(access_token, songIds);
+    APIController.saveSongs(access_token, songIds).then((res) => {
+        if (res.status != 200){
+            showAlert(true);
+        } else {
+            showAlert(false)
+        }
+    })
 }
 
 function closeLiked() {
@@ -328,4 +341,19 @@ function closeLiked() {
     $('.saveButton').hide();
     document.getElementById('overlay').classList.remove('active');
     $("#overlayExit").hide();
+}
+
+function showAlert(error){
+    const alert = $('#alert');
+    if (error){
+        alert.css("background-color", "red");
+        alert.text('Something went wrong, please refresh and try again')
+    } else {
+        alert.css("background-color", "green");
+        alert.text('Songs saved Successfully')
+    }
+    alert.addClass('active');
+    setTimeout(() => {
+        alert.toggleClass('active');
+    }, 2000);
 }
