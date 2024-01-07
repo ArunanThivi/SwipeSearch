@@ -212,6 +212,7 @@ function swipeSong(i, songs, save) {
         $('#completed').show();
     } else {
         setCard(songs[i]);
+        document.getElementById('dummyCover').src = songs[i+1].album.images[0].url;
     }
     
     dummy.style.transform = 'translateX(' + (save ? '100%' : '-200%') + ')';
@@ -232,6 +233,7 @@ function undoSwipe(i, songs) {
     
     setTimeout(() => {
         setCard(songs[i]);
+
         card.style.transition = 'left 0.5s ease-in';
         card.style.left = '50%'
         dummy.innerHTML = "";
